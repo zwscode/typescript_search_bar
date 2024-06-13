@@ -41,18 +41,17 @@ const SearchBar:React.FC = () => {
 	const debouncedFetchBookOptions = debounce(fetchBookOptions, 300);
 	const debouncedClearBookList = debounce(() => setBookList([]), 300);
 
-
 	const handleInputChange = (event: any) => {
 		const inputContent = event.target.value;
 		setInput(inputContent);
 
 		const inputType = event.nativeEvent.inputType;
 		// if the input is not changed by typing, then return
-		if (inputType == undefined) {
-			setBookList([]);
-			return;
-		}
-		if (inputContent != "") {
+		// if (inputType === undefined) {
+		// 	debouncedClearBookList();
+		// 	return;
+		// }
+		if (inputContent !== "") {
 			debouncedFetchBookOptions(inputContent);
 		} else {
 			debouncedClearBookList();
@@ -62,9 +61,9 @@ const SearchBar:React.FC = () => {
 
 	return (
 	<div className="search-bar">
-		<input type="text" placeholder={input} list="booklist" className="search-input" onChange={handleInputChange}/>
+		<input type="text" placeholder={input} list="booklist" className="search-input" onChange={handleInputChange} data-testid="testid-search-bar"/>
 		
-		{bookList.length > 0 ? (<datalist id="booklist">
+		{bookList.length > 0 ? (<datalist id="booklist" data-testid="testid-booklist">
 			{bookList.map((bookInfo) => {
 				return <option key={bookInfo.id} value={bookInfo.title}/>
 			})}
