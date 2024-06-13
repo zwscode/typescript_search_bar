@@ -1,10 +1,8 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-
-function App() {
-  return (
-    <div className="App">
+import SearchBar from './components/SearchBar/SearchBar';
+{/* <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
@@ -19,7 +17,11 @@ function App() {
           Learn React
         </a>
       </header>
-    </div>
+    </div> */}
+
+function App() {
+  return (
+      <SearchBar/>
   );
 }
 
