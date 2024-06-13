@@ -45,12 +45,6 @@ const SearchBar:React.FC = () => {
 		const inputContent = event.target.value;
 		setInput(inputContent);
 
-		const inputType = event.nativeEvent.inputType;
-		// if the input is not changed by typing, then return
-		// if (inputType === undefined) {
-		// 	debouncedClearBookList();
-		// 	return;
-		// }
 		if (inputContent !== "") {
 			debouncedFetchBookOptions(inputContent);
 		} else {

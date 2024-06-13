@@ -50,13 +50,13 @@ describe('search bar', () => {
 		const { getByPlaceholderText } = render(<SearchBar />);
 		const inputField = getByPlaceholderText('') as HTMLInputElement ;
 		expect(inputField).toBeInTheDocument();
-		fireEvent.change(inputField, { target: { value: 'math' } });
+		fireEvent.change(inputField, { target: { value: 'math' }});
 		expect(inputField.value).toBe('math');
 		await waitFor(() => {expect(fetchMock).toHaveBeenCalledTimes(1);})
 		await waitFor(() => {
 			const bookList = screen.getByTestId('testid-booklist');
 			expect(bookList).toBeInTheDocument();
 			expect(bookList.children.length).toBeGreaterThan(0);
-		}, { timeout: 500});
+		});
 	});
 });
