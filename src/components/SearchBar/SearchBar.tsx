@@ -39,7 +39,7 @@ const SearchBar:React.FC = () => {
 		
 	}
 
-	const debouncedFetch = useDebounce(fetchBookOptions, 300);
+	const [debouncedFetch, debouncedCancel, debouncedFlush] = useDebounce(fetchBookOptions, 300);
 
 	const debouncedClearBookList = debounce(() => setBookList([]), 300);
 
