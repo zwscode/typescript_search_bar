@@ -3,6 +3,7 @@ import { useState } from 'react'
 import debounce from '../../utils/debounce';
 import './SearchBar.css'
 import useDebounce from '../../custom_hooks/useDebounce';
+import useThrottle from '../../custom_hooks/useThrottle';
 
 interface BookInfo {
 	id: string;
@@ -15,7 +16,6 @@ const SearchBar:React.FC = () => {
 	const [bookList, setBookList] = useState<BookInfo[]>([]);
 
 	const fetchBookOptions = async (queryName: string) => {
-		console.log("fetching data", queryName);
 		try {
 			const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${queryName}&startIndex=0&maxResults=5`);
 			
@@ -39,7 +39,7 @@ const SearchBar:React.FC = () => {
 		
 	}
 
-	const [debouncedFetch, debounceCancel, debounceFlush] = useDebounce(fetchBookOptions, 300);
+	const debouncedFetch = useDebounce(fetchBookOptions, 300);
 
 	const debouncedClearBookList = debounce(() => setBookList([]), 300);
 

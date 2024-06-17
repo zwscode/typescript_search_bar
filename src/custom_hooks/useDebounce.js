@@ -1,7 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
-function useDebounce(callback, delay, options) {
-    const { leading = false, trailing = true, maxWait } = options || {};
+function useDebounce(
+    callback,
+    wait = 0,
+    options = { leading: false, trailing: true, maxWait: null }
+) {
+    const { leading, trailing, maxWait } = options || {};
 
     const [value, setValue] = useState();
     const [delayedCount, setDelayedCount] = useState(0);
@@ -28,7 +32,7 @@ function useDebounce(callback, delay, options) {
         const timeSinceLastCall = time - lastInvokeTimeRef.current;
         return (
             lastInvokeTimeRef.current === 0 ||
-            timeSinceLastCall >= delay ||
+            timeSinceLastCall >= wait ||
             (maxWait && timeSinceLastCall >= maxWait)
         );
     };
@@ -39,7 +43,6 @@ function useDebounce(callback, delay, options) {
             maxWaitTimer.current = null;
         }
         if (timeoutTimer.current) {
-            console.log("cancel timeoutTimer");
             clearTimeout(timeoutTimer.current);
             timeoutTimer.current = null;
         }
@@ -63,7 +66,6 @@ function useDebounce(callback, delay, options) {
 
     const timerExpired = () => {
         const time = Date.now();
-        console.log("timerExpired", shouldInvoke(time), trailing);
         if (shouldInvoke(time) && trailing) {
             if (!(leading && trailing && delayedCount === 0)) {
                 invokeFunction(time);
@@ -79,14 +81,14 @@ function useDebounce(callback, delay, options) {
         } else {
             setDelayedCount(0);
         }
-        console.log("startTimer", delay);
-        timeoutTimer.current = setTimeout(timerExpired, delay);
+        timeoutTimer.current = setTimeout(timerExpired, wait);
     };
 
     const flush = () => {
-        if (timeoutTimer.current) {
+        if (timeoutTimer.current && lastArgsRef.current) {
             timerExpired();
         }
+        return value;
     };
 
     const debounced = useCallback(
@@ -99,7 +101,6 @@ function useDebounce(callback, delay, options) {
 
             let needStartTimer = false;
 
-            console.log("debounced isInvoking", isInvoking);
             if (isInvoking) {
                 if (leading) {
                     if (!timeoutTimer.current) {
@@ -128,10 +129,13 @@ function useDebounce(callback, delay, options) {
 
             return value;
         },
-        [callback, delay, leading, maxWait, trailing]
+        [callback, wait, leading, maxWait, trailing]
     );
 
-    return [debounced, cancel, flush];
+    debounced.cancel = cancel;
+    debounced.flush = flush;
+
+    return debounced;
 }
 
 export default useDebounce;
